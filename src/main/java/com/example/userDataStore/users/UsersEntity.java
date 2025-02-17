@@ -15,7 +15,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)  // Ignore unknown fields
-@ToString
 @Table(name = "users")
 
 public class UsersEntity {
@@ -47,6 +46,18 @@ public class UsersEntity {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "UsersEntity{" +
+                "id=" + id +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", birthdate=" + birthdate +
+                ", message='" + message + '\'' +
+                '}';
     }
 }
 
