@@ -14,7 +14,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**") // Adjust this to match your API endpoints
                         //.allowedOrigins("http://127.0.0.1:5500") // Allow your frontend
-                        .allowedOrigins("https://aliasefi.github.io/user-data/")
+                        .allowedOrigins("https://aliasefi.github.io")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowCredentials(true);
             }
