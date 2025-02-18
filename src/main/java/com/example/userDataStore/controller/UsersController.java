@@ -1,5 +1,8 @@
-package com.example.userDataStore.users;
+package com.example.userDataStore.controller;
 
+import com.example.userDataStore.dto.UsersDTO;
+import com.example.userDataStore.entity.UsersEntity;
+import com.example.userDataStore.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +17,22 @@ public class UsersController {
     private UsersService usersService;
 
     @PostMapping("/create")
-    public ResponseEntity<UsersEntity> createUsers(@RequestBody UsersEntity user){
-        return new ResponseEntity<>(usersService.createUser(user), HttpStatus.CREATED);
+    public ResponseEntity<UsersDTO> createUsers(@RequestBody UsersDTO usersDTO){
+        return new ResponseEntity<>(usersService.createUser(usersDTO), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<UsersEntity>> getAllUsers(){
+    public ResponseEntity<List<UsersDTO>> getAllUsers(){
         return new ResponseEntity<>(usersService.getAllUsers(),HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<UsersDTO>> getUsersByName(@RequestParam String name){
+        return new ResponseEntity<>(usersService.findUsersByName(name),HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<UsersEntity> getUserById(@PathVariable("id") Long id){
+    public ResponseEntity<UsersDTO> getUserById(@PathVariable("id") Long id){
         return new ResponseEntity<>(usersService.getUserById(id).get(), HttpStatus.OK);
     }
 
