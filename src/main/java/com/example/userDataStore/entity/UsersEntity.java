@@ -51,5 +51,60 @@ public class UsersEntity {
         return Objects.hashCode(id);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public Double getTotalInvestment() {
+        return totalInvestment;
+    }
+
+    public void setTotalInvestment(Double totalInvestment) {
+        this.totalInvestment = totalInvestment;
+    }
+
+    public Double getTotalLoan() {
+        return totalLoan;
+    }
+
+    public void setTotalLoan(Double totalLoan) {
+        this.totalLoan = totalLoan;
+    }
+
+    public List<InvestmentEntity> getInvestmentsList() {
+        return investmentsList;
+    }
+
+    public void setInvestmentsList(List<InvestmentEntity> investmentsList) {
+        this.investmentsList = investmentsList;
+    }
+
+    public List<LoanEntity> getLoansList() {
+        return loansList;
+    }
+
+    public void setLoansList(List<LoanEntity> loansList) {
+        this.loansList = loansList;
+    }
 }
 
