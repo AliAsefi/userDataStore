@@ -11,6 +11,7 @@ import com.example.userDataStore.repository.LoanRepository;
 import com.example.userDataStore.repository.PaymentRepository;
 import com.example.userDataStore.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +39,36 @@ public class PaymentService {
         loanEntity.setRemainingBalance(loanEntity.getRemainingBalance() - paymentDTO.getPaymentAmount());
 
         loanRepository.save(loanEntity);
-        paymentRepository.save(paymentEntity);
+        PaymentEntity payment = paymentRepository.save(paymentEntity);
 
-        return mapper.mapPaymentEntityToPaymentDto(paymentEntity);
+        return mapper.mapPaymentEntityToPaymentDto(payment);
+    }
+
+    public List<PaymentDTO> getAllPayments() {
+        return paymentRepository.findAll()
+                .stream()
+                .map(mapper::mapPaymentEntityToPaymentDto)
+                .collect(Collectors.toList());
+    }
+
+    public PaymentDTO getPaymentById(Long id) {
+        PaymentEntity payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        return mapper.mapPaymentEntityToPaymentDto(payment);
+    }
+
+    public PaymentDTO updatePayment(Long id, PaymentDTO paymentDTO) {
+        PaymentEntity payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        payment.setPaymentAmount(paymentDTO.getPaymentAmount());
+        payment.setPaymentDate(paymentDTO.getPaymentDate());
+
+        paymentRepository.save(payment);
+        return mapper.mapPaymentEntityToPaymentDto(payment);
+    }
+
+    public void deletePayment(Long id) {
+        paymentRepository.deleteById(id);
     }
 }

@@ -25,7 +25,7 @@ public class PaymentEntity {
     private LocalDate paymentDate;
 
     @ManyToOne
-    @JoinColumn(name = "loan_id")
+    @JoinColumn(name = "loans_id")
     private LoanEntity loans;
 
     @Override

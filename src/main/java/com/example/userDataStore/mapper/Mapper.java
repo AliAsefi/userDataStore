@@ -21,8 +21,6 @@ public class Mapper {
         usersDTO.setId(usersEntity.getId());
         usersDTO.setFirstname(usersEntity.getFirstname());
         usersDTO.setLastname(usersEntity.getLastname());
-        usersDTO.setTotalInvestment(usersEntity.getTotalInvestment());
-        usersDTO.setTotalLoan(usersEntity.getTotalLoan());
 
         return usersDTO;
     }
@@ -34,20 +32,20 @@ public class Mapper {
         usersEntity.setId(usersDTO.getId());
         usersEntity.setFirstname(usersDTO.getFirstname());
         usersEntity.setLastname(usersDTO.getLastname());
-        usersEntity.setTotalInvestment(usersDTO.getTotalInvestment());
-        usersEntity.setTotalLoan(usersDTO.getTotalLoan());
 
         return usersEntity;
     }
 
     //convert InvestmentEntity to InvestmentDTO
     public InvestmentDTO mapInvestmentEntityToInvestmentDto(InvestmentEntity investmentEntity){
-        return new InvestmentDTO(
-                investmentEntity.getId(),
-                investmentEntity.getUsers().getId(),
-                investmentEntity.getInvestedAmount(),
-                investmentEntity.getInvestedDate()
-        );
+        InvestmentDTO investmentDTO = new InvestmentDTO();
+
+        investmentDTO.setId(investmentEntity.getId());
+        investmentDTO.setUsersId(investmentEntity.getUsers().getId());
+        investmentDTO.setInvestedAmount(investmentEntity.getInvestedAmount());
+        investmentDTO.setInvestedDate(investmentEntity.getInvestedDate());
+
+        return investmentDTO;
     }
 
     //convert InvestmentDTO to InvestmentEntity
@@ -65,7 +63,7 @@ public class Mapper {
     public LoanDTO mapLoanEntityToLoanDto(LoanEntity loanEntity){
         LoanDTO loanDTO = new LoanDTO();
 
-        //loanDTO.setId(loanEntity.getId());
+        loanDTO.setId(loanEntity.getId());
         loanDTO.setUsersId(loanEntity.getUsers().getId());
         loanDTO.setLoanAmount(loanEntity.getLoanAmount());
         loanDTO.setStartDate(loanEntity.getStartDate());
@@ -80,7 +78,7 @@ public class Mapper {
     public LoanEntity mapLoanDtoToLoanEntity(LoanDTO loanDTO , UsersEntity usersEntity){
         LoanEntity loanEntity = new LoanEntity();
 
-        //loanEntity.setId(loanDTO.getId());
+        loanEntity.setId(loanDTO.getId());
         loanEntity.setUsers(usersEntity);
         loanEntity.setLoanAmount(loanDTO.getLoanAmount());
         loanEntity.setStartDate(loanDTO.getStartDate());
@@ -95,7 +93,7 @@ public class Mapper {
     public PaymentDTO mapPaymentEntityToPaymentDto(PaymentEntity paymentEntity){
         PaymentDTO paymentDTO = new PaymentDTO();
 
-        //paymentDTO.setId(paymentEntity.getId());
+        paymentDTO.setId(paymentEntity.getId());
         paymentDTO.setLoanId(paymentEntity.getLoans().getId());
         paymentDTO.setPaymentAmount(paymentEntity.getPaymentAmount());
         paymentDTO.setPaymentDate(paymentEntity.getPaymentDate());
@@ -107,7 +105,7 @@ public class Mapper {
     public PaymentEntity mapPaymentDtoToPaymentEntity(PaymentDTO paymentDTO , LoanEntity loanEntity){
         PaymentEntity paymentEntity = new PaymentEntity();
 
-        //paymentEntity.setId(paymentDTO.getId());
+        paymentEntity.setId(paymentDTO.getId());
         paymentEntity.setLoans(loanEntity);
         paymentEntity.setPaymentAmount(paymentDTO.getPaymentAmount());
         paymentEntity.setPaymentDate(paymentDTO.getPaymentDate());
