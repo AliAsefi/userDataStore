@@ -42,4 +42,9 @@ public class LoanController {
         return ResponseEntity.ok("Loan deleted successfully.");
     }
 
+    @GetMapping("/user/{userID}")
+    public ResponseEntity<List<LoanDTO>> getLoanByUserId (@PathVariable("userID") Long id){
+        return new ResponseEntity<>(loanService.getLoanByUserId(id), HttpStatus.OK);
+    }
+
 }

@@ -1,19 +1,16 @@
 package com.example.userDataStore.service;
 
 import com.example.userDataStore.dto.InvestmentDTO;
-import com.example.userDataStore.dto.UsersDTO;
 import com.example.userDataStore.entity.InvestmentEntity;
 import com.example.userDataStore.entity.UsersEntity;
 import com.example.userDataStore.mapper.Mapper;
 import com.example.userDataStore.repository.InvestmentRepository;
 import com.example.userDataStore.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +30,6 @@ public class InvestmentService {
 
         InvestmentEntity investmentEntity = mapper.mapInvestmentDtoToInvestmentEntity(investmentDTO, usersEntity);
 
-        usersEntity.setTotalInvestment(usersEntity.getTotalInvestment() + investmentDTO.getInvestedAmount());
         usersRepository.save(usersEntity);
         investmentRepository.save(investmentEntity);
 
@@ -50,6 +46,14 @@ public class InvestmentService {
     public InvestmentDTO getInvestmentById(Long id) {
         return mapper.mapInvestmentEntityToInvestmentDto(investmentRepository.findById(id)
                 .orElseThrow(()->new RuntimeException("Investment not found!")));
+    }
+
+    public List<InvestmentDTO> getInvestmentsByUserId(Long userId) {
+        List<InvestmentEntity> investmentEntities = investmentRepository.findByUsers_Id(userId);
+        return investmentEntities
+                .stream()
+                .map(mapper::mapInvestmentEntityToInvestmentDto)
+                .collect(Collectors.toList());
     }
 
     public InvestmentDTO updateInvestment(Long id, InvestmentDTO investmentDTO) {

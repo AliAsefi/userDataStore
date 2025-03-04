@@ -43,4 +43,13 @@ public class PaymentController {
         return ResponseEntity.ok("Payment deleted successfully.");
     }
 
+    @GetMapping("/user/{usersId}")
+    public ResponseEntity<List<PaymentDTO>> getPaymentByUserId (@PathVariable("usersId") Long id){
+        return new ResponseEntity<>(paymentService.getPaymentByUserId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{usersId}/{loansId}")
+    public ResponseEntity<List<PaymentDTO>> getAllPaymentByUserIdAndLoanId(@PathVariable("loansId") Long loanId, @PathVariable("usersId") Long userId){
+        return new ResponseEntity<>(paymentService.getAllPaymentByUserIdAndLoanId(loanId,userId),HttpStatus.OK);
+    }
 }

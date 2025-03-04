@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +19,18 @@ public class LoanDTO {
     private Double loanAmount;
     private LocalDate startDate;
     private Integer durationMonths;
+    /**
+     Calculated Field: (loanAmount/durationMonths)
+     */
     private Double monthlyPayment;
-    private Double remainingBalance;
+    /**
+     Calculated Field: for each loan (loanAmount - totalPayment)
+     */
+    private Double remainingLoan;   //
+    /**
+     Calculated Field: Sum of payments for this loan
+     */
+    private Double totalPayment;
+
+    private List<PaymentDTO> paymentslist = new ArrayList<>();
 }

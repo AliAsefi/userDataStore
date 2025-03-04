@@ -12,11 +12,25 @@ import lombok.Setter;
 public class UsersFinancialSummaryDTO {
     private Long userId;
     private String username;
-    private Double totalInvestment;
-    private Double totalLoan;
-    private Double remainingLoanBalance;
-    private int remainingLoanMonths;
-    private Double totalAccountBalance;
+
+//    private List<LoanDTO> loansList;
+//    private List<InvestmentDTO> investmentsList;
+    /**
+     Calculated Field: totalInvestment
+     */
+    private Double totalInvestments;
+    /**
+     Calculated Field:
+     */
+    private Double totalLoans;
+    /**
+     Calculated Field: (totalLoans - totalPayment)
+     */
+    private Double totalRemainingLoansBalance;
+    /**
+     Calculated Field: (totalInvestment + totalRemainingLoansBalance)
+     */
+    private Double totalAccountsBalance;
 }
 
 /*

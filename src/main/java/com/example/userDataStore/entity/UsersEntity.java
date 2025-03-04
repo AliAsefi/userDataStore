@@ -25,9 +25,6 @@ public class UsersEntity {
     private String firstname;
     private String lastname;
 
-    private Double totalInvestment = 0.0;
-    private Double totalLoan = 0.0;
-
     @OneToMany(mappedBy = "users" , cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<InvestmentEntity> investmentsList = new ArrayList<>();

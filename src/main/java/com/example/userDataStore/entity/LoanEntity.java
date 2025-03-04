@@ -26,12 +26,13 @@ public class LoanEntity {
     @ManyToOne
     @JoinColumn(name = "users_id")
     private UsersEntity users;
-
     private Double loanAmount;
     private LocalDate startDate;
     private Integer durationMonths;
+    /**
+     * calculated Field
+     */
     private Double monthlyPayment;
-    private Double remainingBalance;
 
     @OneToMany(mappedBy = "loans", cascade = CascadeType.ALL)
     @ToString.Exclude

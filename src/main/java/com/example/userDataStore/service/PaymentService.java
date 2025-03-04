@@ -36,8 +36,6 @@ public class PaymentService {
 
         PaymentEntity paymentEntity = mapper.mapPaymentDtoToPaymentEntity(paymentDTO,loanEntity);
 
-        loanEntity.setRemainingBalance(loanEntity.getRemainingBalance() - paymentDTO.getPaymentAmount());
-
         loanRepository.save(loanEntity);
         PaymentEntity payment = paymentRepository.save(paymentEntity);
 
@@ -70,5 +68,21 @@ public class PaymentService {
 
     public void deletePayment(Long id) {
         paymentRepository.deleteById(id);
+    }
+
+    public List<PaymentDTO> getPaymentByUserId(Long id) {
+        List<PaymentEntity> paymentEntities = paymentRepository.findByLoans_Users_Id(id);
+        return paymentEntities
+                .stream()
+                .map(mapper::mapPaymentEntityToPaymentDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PaymentDTO> getAllPaymentByUserIdAndLoanId (Long loanId ,Long userId){
+        List<PaymentEntity> paymentEntities = paymentRepository.findByLoans_IdAndLoans_Users_Id(loanId,userId);
+        return paymentEntities
+                .stream()
+                .map(mapper::mapPaymentEntityToPaymentDto)
+                .collect(Collectors.toList());
     }
 }

@@ -42,4 +42,8 @@ public class InvestmentController {
         return ResponseEntity.ok("Investment deleted successfully.");
     }
 
+    @GetMapping("/user/{userID}")
+    public ResponseEntity<List<InvestmentDTO>> getInvestmentsByUserId (@PathVariable("userID") Long userId){
+        return new ResponseEntity<>(investmentService.getInvestmentsByUserId(userId), HttpStatus.OK);
+    }
 }

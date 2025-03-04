@@ -2,7 +2,6 @@ package com.example.userDataStore.service;
 
 import com.example.userDataStore.dto.UsersDTO;
 import com.example.userDataStore.dto.UsersFinancialSummaryDTO;
-import com.example.userDataStore.entity.LoanEntity;
 import com.example.userDataStore.mapper.Mapper;
 import com.example.userDataStore.repository.UsersRepository;
 import com.example.userDataStore.entity.UsersEntity;
@@ -22,6 +21,8 @@ public class UsersService {
     private Mapper mapper;
     @Autowired
     private LoanService loanService;
+    @Autowired
+    private FinancialCalculation financialCalculation;
 
     @Transactional  // Ensures the database transaction is committed
     public UsersDTO createUser(UsersDTO userDto){
@@ -67,28 +68,11 @@ public class UsersService {
         UsersEntity usersEntity = usersRepository.findById(userId)
                 .orElseThrow(()->new RuntimeException("User not found!"));
 
-        double remainingLoanBalance = usersEntity.getLoansList()
-                .stream()
-                .mapToDouble(LoanEntity::getRemainingBalance)
-                .sum();
-
-        int remainingLoanMonths = usersEntity.getLoansList()
-                .stream()
-                .mapToInt(loanService::calculateMonthRemaining)
-                .max()  // The max remaining months from all loans
-                .orElse(0);
-        double totalAccountBalance = usersEntity.getTotalInvestment() - remainingLoanBalance;
-
-
-        UsersFinancialSummaryDTO userSummaryDto = new UsersFinancialSummaryDTO();
-
-        userSummaryDto.setUserId(usersEntity.getId());
-        userSummaryDto.setUsername(usersEntity.getFirstname() +" "+ usersEntity.getLastname());
-        userSummaryDto.setTotalInvestment(usersEntity.getTotalInvestment());
-        userSummaryDto.setTotalLoan(usersEntity.getTotalLoan());
-        userSummaryDto.setRemainingLoanBalance(remainingLoanBalance);
-        userSummaryDto.setRemainingLoanMonths(remainingLoanMonths);
-        userSummaryDto.setTotalAccountBalance(totalAccountBalance);
+        UsersFinancialSummaryDTO userSummaryDto = mapper.mapEntityToUsersFinancialSummaryDTO(usersEntity);
+        userSummaryDto.setTotalInvestments(financialCalculation.calculateTotalInvestment(usersEntity));
+        userSummaryDto.setTotalLoans(financialCalculation.calculateTotalLoan(usersEntity));
+        userSummaryDto.setTotalRemainingLoansBalance(financialCalculation.calculateTotalRemainingLoansBalance(usersEntity));
+        userSummaryDto.setTotalAccountsBalance(financialCalculation.calculateTotalAccountBalance(usersEntity));
 
         return userSummaryDto;
     }
@@ -96,30 +80,46 @@ public class UsersService {
     public List<UsersFinancialSummaryDTO> getAllUserSummaries() {
         List<UsersEntity> users = usersRepository.findAll(); // ✅ Get all users
 
-        return users.stream().map(user -> {
+        return users.stream().map(usersEntity -> {
 
-            double remainingLoanBalance = user.getLoansList().stream()
-                    .mapToDouble(LoanEntity::getRemainingBalance)
-                    .sum();
+            UsersFinancialSummaryDTO userSummaryDto = mapper.mapEntityToUsersFinancialSummaryDTO(usersEntity);
+            userSummaryDto.setTotalInvestments(financialCalculation.calculateTotalInvestment(usersEntity));
+            userSummaryDto.setTotalLoans(financialCalculation.calculateTotalLoan(usersEntity));
+            userSummaryDto.setTotalRemainingLoansBalance(financialCalculation.calculateTotalRemainingLoansBalance(usersEntity));
+            userSummaryDto.setTotalAccountsBalance(financialCalculation.calculateTotalAccountBalance(usersEntity));
 
-            int remainingLoanMonths = user.getLoansList().stream()
-                    .mapToInt(loanService::calculateMonthRemaining) // ✅ Call LoanService method
-                    .max()
-                    .orElse(0);
-
-            double totalAccountBalance = user.getTotalInvestment() - remainingLoanBalance;
-
-            UsersFinancialSummaryDTO summaryDTO = new UsersFinancialSummaryDTO();
-            summaryDTO.setUserId(user.getId());
-            summaryDTO.setUsername(user.getFirstname() +" "+ user.getLastname());
-            summaryDTO.setTotalInvestment(user.getTotalInvestment());
-            summaryDTO.setRemainingLoanBalance(remainingLoanBalance);
-            summaryDTO.setRemainingLoanMonths(remainingLoanMonths);
-            summaryDTO.setTotalAccountBalance(totalAccountBalance);
-
-            return summaryDTO;
+            return userSummaryDto;
         }).collect(Collectors.toList());
     }
+}
+
+
+/**
+ * Where should I make calculations:
+ *
+ * What's Good:
+ * Centralized Calculation: You're calculating totalInvestment in one place (InvestmentService), which promotes reuse.
+ * Consistent Mapping: The Mapper class handles all conversions between entities and DTOs, maintaining clean architecture.
+ * What's Not Ideal:
+ * Tight Coupling in Mapper:
+ *
+ * Your Mapper is tightly coupled with InvestmentService. This creates a circular dependency since both might depend on each other.
+ * The Mapper should only handle mapping, not calculations or business logic.
+ * Responsibility Confusion:
+ *
+ * InvestmentService is responsible for CRUD operations, but it also handles calculations.
+ * This violates the Single Responsibility Principle.
+ * Best Practice: Where to Put Calculations
+ * Service Layer:
+ *
+ * Calculations like totalInvestment, totalLoans, and totalRemainingLoans should be centralized in the UserService, not in InvestmentService or the Mapper.
+ * This keeps business logic separate and avoids circular dependencies.
+ * Mapper Class:
+ *
+ * Should only handle Entity ↔ DTO conversions, not calculations.
+ * This keeps the Mapper class simple and focused on data transformation.
+ */
+
 
 //    @PostConstruct
 //    public void testDatabaseConnection() {
@@ -127,4 +127,3 @@ public class UsersService {
 //        List<UsersEntity> users = usersRepository.findAll();
 //        System.out.println("Users from DB: " + users);
 //    }
-}
